@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+data/mundial2026.db
+data/*.db
+.env
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
