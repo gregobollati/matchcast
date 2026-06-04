@@ -344,7 +344,46 @@ a{color:inherit;text-decoration:none}
 .hm-cell{border-radius:3px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:600;cursor:default}
 .hm-lbl{font-size:.5rem;color:var(--muted);display:flex;align-items:center;justify-content:center}
 
-/* ══ Y SI ═════════════════════════════════════════════════ */
+/* ══ HAMBURGER MOBILE ════════════════════════════════════ */
+.hbg-btn{
+  display:none;flex-direction:column;justify-content:center;gap:5px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:8px 10px;flex-shrink:0;margin-left:auto;
+}
+.hbg-btn span{display:block;width:18px;height:2px;background:var(--text);border-radius:2px;transition:all .25s}
+.hbg-btn.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hbg-btn.open span:nth-child(2){opacity:0}
+.hbg-btn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+.mobile-menu{
+  display:none;position:fixed;top:56px;left:0;right:0;z-index:199;
+  background:rgba(7,16,10,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:8px 0 12px;
+  animation:slidemenu .2s ease;
+}
+@keyframes slidemenu{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.mobile-menu.open{display:block}
+.mobile-menu-item{
+  display:flex;align-items:center;gap:12px;
+  padding:13px 20px;font-size:.9rem;font-weight:500;
+  color:var(--muted);transition:all .15s;cursor:pointer;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.mobile-menu-item:last-child{border-bottom:none}
+.mobile-menu-item:hover,.mobile-menu-item.active-m{background:var(--green3);color:var(--green)}
+.mobile-menu-item .mmi-ico{font-size:1.1rem;width:24px;text-align:center;flex-shrink:0}
+.mobile-menu-item .mmi-txt{flex:1}
+.mobile-menu-item .mmi-arr{font-size:.7rem;color:var(--muted2)}
+.mobile-menu-item.pro-item{color:var(--purple)}
+.mobile-menu-item.pro-item:hover{background:var(--purple-s);color:var(--purple)}
+.menu-overlay{display:none;position:fixed;inset:0;z-index:198;background:rgba(0,0,0,.5)}
+.menu-overlay.open{display:block}
+
+@media(max-width:680px){
+  .nav-scroll{display:none}
+  .hbg-btn{display:flex}
+}
 .ys-wrap{background:linear-gradient(135deg,#071A0C,#0C2212);border:1px solid rgba(57,224,74,.15);border-radius:var(--r);padding:18px;margin-bottom:14px}
 .ys-title{font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;color:var(--text);letter-spacing:1px;margin-bottom:4px}
 .ys-sub{font-size:.73rem;color:var(--muted);margin-bottom:14px}
@@ -453,8 +492,28 @@ a{color:inherit;text-decoration:none}
       <button class="nav-btn" onclick="go('equipos',this)">Equipos</button>
       <button class="nav-btn nav-pro" onclick="go('pro',this)">⚗ Pro</button>
     </div>
+    <button class="hbg-btn" id="hbgBtn" onclick="toggleMenu()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </header>
+
+<!-- Mobile menu overlay -->
+<div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+
+<!-- Mobile dropdown menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-menu-item active-m" id="mm-home" onclick="goMobile('home')"><span class="mmi-ico">🏠</span><span class="mmi-txt">Hoy</span><span class="mmi-arr">›</span></div>
+  <div class="mobile-menu-item" id="mm-ys" onclick="goMobile('ys')"><span class="mmi-ico">❓</span><span class="mmi-txt">¿Y si...?</span><span class="mmi-arr">›</span></div>
+  <div class="mobile-menu-item" id="mm-proximos" onclick="goMobile('proximos')"><span class="mmi-ico">🔜</span><span class="mmi-txt">Próximos partidos</span><span class="mmi-arr">›</span></div>
+  <div class="mobile-menu-item" id="mm-resultados" onclick="goMobile('resultados')"><span class="mmi-ico">✅</span><span class="mmi-txt">Resultados</span><span class="mmi-arr">›</span></div>
+  <div class="mobile-menu-item" id="mm-grupos" onclick="goMobile('grupos')"><span class="mmi-ico">📊</span><span class="mmi-txt">Grupos y posiciones</span><span class="mmi-arr">›</span></div>
+  <div class="mobile-menu-item" id="mm-fixture" onclick="goMobile('fixture')"><span class="mmi-ico">🏆</span><span class="mmi-txt">Fixture completo</span><span class="mmi-arr">›</span></div>
+  <div class="mobile-menu-item" id="mm-campeones" onclick="goMobile('campeones')"><span class="mmi-ico">👑</span><span class="mmi-txt">¿Quién puede ser campeón?</span><span class="mmi-arr">›</span></div>
+  <div class="mobile-menu-item" id="mm-presion" onclick="goMobile('presion')"><span class="mmi-ico">🔥</span><span class="mmi-txt">Índice de presión</span><span class="mmi-arr">›</span></div>
+  <div class="mobile-menu-item" id="mm-equipos" onclick="goMobile('equipos')"><span class="mmi-ico">🌍</span><span class="mmi-txt">Nivel de selecciones</span><span class="mmi-arr">›</span></div>
+  <div class="mobile-menu-item pro-item" id="mm-pro" onclick="goMobile('pro')"><span class="mmi-ico">⚗</span><span class="mmi-txt">Análisis Pro</span><span class="mmi-arr">›</span></div>
+</div>
 
 <main class="main">
 
@@ -618,12 +677,51 @@ function favLabel(hw,dw,aw,hn,an){
   return{cls:'fav-open',txt:'Partido abierto'};
 }
 
+// ── MOBILE MENU ──────────────────────────────────────────────────────────
+// Convierte "2026-06-11" → "11/06/2026"
+function fmtDate(iso){
+  if(!iso) return '';
+  const [y,m,d] = iso.split('-');
+  return `${d}/${m}/${y}`;
+}
+function toggleMenu(){
+  const btn=document.getElementById('hbgBtn');
+  const menu=document.getElementById('mobileMenu');
+  const overlay=document.getElementById('menuOverlay');
+  const isOpen=menu.classList.contains('open');
+  if(isOpen){closeMenu();}
+  else{btn.classList.add('open');menu.classList.add('open');overlay.classList.add('open');document.body.style.overflow='hidden';}
+}
+function closeMenu(){
+  document.getElementById('hbgBtn').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.getElementById('menuOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function goMobile(name){
+  closeMenu();
+  // Update mobile menu active state
+  document.querySelectorAll('.mobile-menu-item').forEach(el=>el.classList.remove('active-m'));
+  const item=document.getElementById('mm-'+name);
+  if(item)item.classList.add('active-m');
+  // Also update desktop nav
+  const desktopBtns=document.querySelectorAll('.nav-btn');
+  const names=['home','ys','proximos','resultados','grupos','fixture','campeones','presion','equipos','pro'];
+  desktopBtns.forEach((b,i)=>{b.classList.toggle('active',names[i]===name);});
+  // Navigate
+  go(name, null);
+}
+
 // ── NAV ──────────────────────────────────────────────────────────────────
 function go(name,btn){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('sec-'+name).classList.add('active');
   if(btn)btn.classList.add('active');
+  // Sync mobile menu active state
+  document.querySelectorAll('.mobile-menu-item').forEach(el=>el.classList.remove('active-m'));
+  const mItem=document.getElementById('mm-'+name);
+  if(mItem)mItem.classList.add('active-m');
   const L={home:loadHome,ys:loadYs,proximos:loadUpcoming,resultados:loadResults,grupos:loadGroups,fixture:loadFixture,campeones:loadChampions,presion:loadPressure,equipos:loadTeams,pro:loadPro};
   if(L[name])L[name]();
 }
@@ -657,11 +755,11 @@ async function buildInsights(){
   }
   if(upcoming&&upcoming.length){
     const surps=upcoming.filter(m=>m.away_win_prob>0.28&&m.home_elo-m.away_elo>120);
-    if(surps.length){const s=surps[0];ins.push({ico:'💥',title:`Posible batacazo: ${s.away_name}`,body:`${Math.round(s.away_win_prob*100)}% de chances de sorprender al favorito ${s.home_name} el ${s.match_date}.`,bc:'var(--red)'})}
+    if(surps.length){const s=surps[0];ins.push({ico:'💥',title:`Posible batacazo: ${s.away_name}`,body:`${Math.round(s.away_win_prob*100)}% de chances de sorprender al favorito ${s.home_name} el ${fmtDate(s.match_date)}.`,bc:'var(--red)'})}
     const tight=[...upcoming].filter(m=>m.draw_prob).sort((a,b)=>Math.abs((a.draw_prob||0)-.33)-Math.abs((b.draw_prob||0)-.33))[0];
     if(tight&&tight.draw_prob)ins.push({ico:'⚡',title:'Partido impredecible',body:`${tight.home_name} vs ${tight.away_name} — empate tiene ${Math.round(tight.draw_prob*100)}% de probabilidad. Todo puede pasar.`,bc:'var(--purple)'});
     const arg=upcoming.find(m=>m.home_name==='Argentina'||m.away_name==='Argentina');
-    if(arg){const isH=arg.home_name==='Argentina';const opp=isH?arg.away_name:arg.home_name;const p=isH?arg.home_win_prob:arg.away_win_prob;ins.push({ico:'🇦🇷',title:`Argentina juega el ${arg.match_date}`,body:`Próximo partido contra ${opp}. El modelo le da ${Math.round((p||0)*100)}% de chances de ganar.`,bc:'var(--green)'})}
+    if(arg){const isH=arg.home_name==='Argentina';const opp=isH?arg.away_name:arg.home_name;const p=isH?arg.home_win_prob:arg.away_win_prob;ins.push({ico:'🇦🇷',title:`Argentina juega el ${fmtDate(arg.match_date)}`,body:`Próximo partido contra ${opp}. El modelo le da ${Math.round((p||0)*100)}% de chances de ganar.`,bc:'var(--green)'})} 
     const risingTeam=standings&&standings.length>3?standings[3]:null;
     if(risingTeam)ins.push({ico:'📈',title:`${risingTeam.name} en el top 4`,body:`Una de las selecciones a seguir. Nivel ${eloLevel(risingTeam.elo_rating).label}. Grupo ${risingTeam.group_name}.`,bc:'var(--blue)'});
   }
@@ -736,7 +834,7 @@ function matchCard(m){
   return `<div class="match-card ${isF?'finished':isL?'live':'scheduled'}" onclick="openMatch(${m.id})">
     <div class="match-top">
       <span class="match-pill ${pillCls}">${pillTxt}</span>
-      <span class="match-dt">${m.stage}${m.group_name?' · G'+m.group_name:''} · ${m.match_date}${m.match_time?' '+m.match_time:''}</span>
+      <span class="match-dt">${m.stage}${m.group_name?' · G'+m.group_name:''} · ${fmtDate(m.match_date)}${m.match_time?' '+m.match_time:''}</span>
       <span class="match-city">${m.city||''}</span>
       ${fav?`<span class="fav-tag-inline ${fav.cls.replace('fav-','fav-inline-')}">${fav.txt}</span>`:''}
     </div>
@@ -766,7 +864,7 @@ async function loadUpcoming(){
   const d=await api('/matches/upcoming',true);
   if(!d||!d.length){el.innerHTML='<div class="empty"><div class="empty-ico">📭</div>Sin próximos partidos disponibles.</div>';return;}
   const byDate={};d.forEach(m=>{byDate[m.match_date]=byDate[m.match_date]||[];byDate[m.match_date].push(m);});
-  let html='';Object.entries(byDate).forEach(([date,ms])=>{const lbl=new Date(date+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});html+=`<div class="date-sep">📅 ${lbl}</div><div class="matches-list">`+ms.map(matchCard).join('')+'</div>';});
+  let html='';Object.entries(byDate).forEach(([date,ms])=>{const lbl=new Date(date+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});html+=`<div class="date-sep">📅 ${lbl} (${fmtDate(date)})</div><div class="matches-list">`+ms.map(matchCard).join('')+'</div>';});
   el.innerHTML=html;
 }
 
@@ -776,7 +874,7 @@ async function loadResults(){
   const d=await api('/matches/results',true);
   if(!d||!d.length){el.innerHTML='<div class="empty"><div class="empty-ico">⏳</div>Aún no hay resultados.<br><small>El torneo arranca el 11 de junio</small></div>';return;}
   const byDate={};d.forEach(m=>{byDate[m.match_date]=byDate[m.match_date]||[];byDate[m.match_date].push(m);});
-  let html='';Object.entries(byDate).reverse().forEach(([date,ms])=>{const lbl=new Date(date+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});html+=`<div class="date-sep">✅ ${lbl}</div><div class="matches-list">`+ms.map(matchCard).join('')+'</div>';});
+  let html='';Object.entries(byDate).reverse().forEach(([date,ms])=>{const lbl=new Date(date+'T12:00:00').toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});html+=`<div class="date-sep">✅ ${lbl} (${fmtDate(date)})</div><div class="matches-list">`+ms.map(matchCard).join('')+'</div>';});
   el.innerHTML=html;
 }
 
@@ -805,7 +903,7 @@ async function loadFixElim(){
   const rounds=['16avos','Octavos','Cuartos','Semifinales','3er Puesto','Final'];const slots=[8,4,2,1,1,1];
   if(!d||!d.length){let html='<div class="bracket-wrap"><div class="bracket">';rounds.forEach((r,i)=>{html+=`<div class="b-round"><div class="b-round-title">${r}</div><div class="b-matches">`;for(let j=0;j<slots[i];j++)html+=`<div class="b-match"><div class="b-team tbd">Por definir</div><div class="b-div"></div><div class="b-team tbd">Por definir</div></div>`;html+='</div></div>';});html+='</div></div><p style="text-align:center;color:var(--muted);font-size:.72rem;margin-top:10px">Se completa al terminar la fase de grupos (2 julio 2026)</p>';el.innerHTML=html;return;}
   const byR={};d.forEach(m=>{byR[m.stage]=byR[m.stage]||[];byR[m.stage].push(m);});
-  let html='<div class="bracket-wrap"><div class="bracket">';Object.entries(byR).forEach(([r,ms])=>{html+=`<div class="b-round"><div class="b-round-title">${r}</div><div class="b-matches">`;ms.forEach(m=>{const isF=m.status==='FINISHED';html+=`<div class="b-match"><div class="b-team ${isF&&m.home_score>m.away_score?'win':!m.home_name?'tbd':''}">${m.home_name||'Por definir'}${isF?`<span class="b-score">${m.home_score}</span>`:''}</div><div class="b-div"></div><div class="b-team ${isF&&m.away_score>m.home_score?'win':!m.away_name?'tbd':''}">${m.away_name||'Por definir'}${isF?`<span class="b-score">${m.away_score}</span>`:''}</div>${m.match_date?`<div class="b-date">${m.match_date}${m.city?' · '+m.city:''}</div>`:''}</div>`;});html+='</div></div>';});
+  let html='<div class="bracket-wrap"><div class="bracket">';Object.entries(byR).forEach(([r,ms])=>{html+=`<div class="b-round"><div class="b-round-title">${r}</div><div class="b-matches">`;ms.forEach(m=>{const isF=m.status==='FINISHED';html+=`<div class="b-match"><div class="b-team ${isF&&m.home_score>m.away_score?'win':!m.home_name?'tbd':''}">${m.home_name||'Por definir'}${isF?`<span class="b-score">${m.home_score}</span>`:''}</div><div class="b-div"></div><div class="b-team ${isF&&m.away_score>m.home_score?'win':!m.away_name?'tbd':''}">${m.away_name||'Por definir'}${isF?`<span class="b-score">${m.away_score}</span>`:''}</div>${m.match_date?`<div class="b-date">${fmtDate(m.match_date)}${m.city?' · '+m.city:''}</div>`:''}</div>`;});html+='</div></div>';});
   html+='</div></div>';el.innerHTML=html;
 }
 
@@ -900,7 +998,7 @@ async function runSimulation(){
       <span style="font-size:.62rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;flex-shrink:0">Próximo vs</span>
       ${flagImg(oppFlag,22,15,'t-flag-sm')}
       <span style="font-weight:700;font-size:.88rem;color:var(--text)">${opponent}</span>
-      <span style="margin-left:auto;font-size:.65rem;color:var(--muted)">${matchDate||''}${matchCity?' · '+matchCity:''}</span>
+      <span style="margin-left:auto;font-size:.65rem;color:var(--muted)">${fmtDate(matchDate)||''}${matchCity?' · '+matchCity:''}</span>
     </div>` : '';
   el.innerHTML=`
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px">
@@ -934,7 +1032,7 @@ async function openMatch(id){
   document.getElementById('overlay').classList.add('open');
   document.getElementById('mBody').innerHTML='<div class="loading"><div class="spinner"></div> Generando predicción...</div>';
   const all=await api('/matches');const m=all?.find(x=>x.id===id);
-  if(m){document.getElementById('mStage').textContent=`${m.stage}${m.group_name?' · Grupo '+m.group_name:''}`;document.getElementById('mMeta').textContent=`${m.match_date} · ${m.match_time||'TBD'} · ${m.city||''}`;}
+  if(m){document.getElementById('mStage').textContent=`${m.stage}${m.group_name?' · Grupo '+m.group_name:''}`;document.getElementById('mMeta').textContent=`${fmtDate(m.match_date)} · ${m.match_time||'TBD'} · ${m.city||''}`;}
   let pred=m?.home_win_prob?{...m,home_team:m.home_name,away_team:m.away_name}:await api(`/predict/${id}`,true);
   if(pred&&m){pred.home_code=m.home_code;pred.away_code=m.away_code;pred.home_elo=m.home_elo;pred.away_elo=m.away_elo;}
   if(!pred||!pred.home_team){document.getElementById('mBody').innerHTML='<div class="empty">Sin predicción disponible.</div>';return;}
@@ -982,7 +1080,7 @@ function showPro(name,btn){
 async function loadPro(){
   const d=await api('/matches');if(!d)return;allMatches=d;
   const sel=document.getElementById('proSel');
-  sel.innerHTML=d.map(m=>`<option value="${m.id}">[${m.match_date}] ${m.home_name} vs ${m.away_name}</option>`).join('');
+  sel.innerHTML=d.map(m=>`<option value="${m.id}">[${fmtDate(m.match_date)}] ${m.home_name} vs ${m.away_name}</option>`).join('');
 }
 async function loadProMatch(){
   const id=document.getElementById('proSel').value;if(!id)return;
@@ -994,7 +1092,7 @@ async function loadProMatch(){
   const barHtml='<div class="bar-chart">'+topBar.map(s=>`<div class="bar-row"><span class="bar-lbl">${s.score}</span><div class="bar-track"><div class="bar-fill" style="width:${(s.prob/maxP*100).toFixed(0)}%;background:${s.home>s.away?'var(--blue)':s.home===s.away?'#94A3B8':'var(--orange)'}"><span>${(s.prob*100).toFixed(1)}%</span></div></div></div>`).join('')+'</div>';
   const mB=(arr,col)=>'<div class="bar-chart">'+arr.map((p,k)=>`<div class="bar-row"><span class="bar-lbl">${k}</span><div class="bar-track"><div class="bar-fill" style="width:${(p*100/.25).toFixed(0)}%;background:${col}"><span>${(p*100).toFixed(1)}%</span></div></div></div>`).join('')+'</div>';
   const oH=odds?`<div class="pro-card"><div class="pro-card-title">💰 vs Cuotas</div><table class="kv-table"><tr><td>Cuota local</td><td>${odds.home_odds}</td></tr><tr><td>Cuota empate</td><td>${odds.draw_odds||'N/A'}</td></tr><tr><td>Cuota visita</td><td>${odds.away_odds}</td></tr><tr><td>Margen</td><td>${odds.margin}%</td></tr></table>${model_edge?`<div style="margin-top:7px;display:flex;gap:7px;flex-wrap:wrap"><span>L: <span class="edge ${model_edge.home>0.02?'edge-p':model_edge.home<-0.02?'edge-n':''}">${model_edge.home>0?'+':''}${(model_edge.home*100).toFixed(1)}%</span></span><span>X: <span class="edge ${model_edge.draw>0.02?'edge-p':model_edge.draw<-0.02?'edge-n':''}">${model_edge.draw>0?'+':''}${(model_edge.draw*100).toFixed(1)}%</span></span><span>V: <span class="edge ${model_edge.away>0.02?'edge-p':model_edge.away<-0.02?'edge-n':''}">${model_edge.away>0?'+':''}${(model_edge.away*100).toFixed(1)}%</span></span></div>`:''}</div>`:'';
-  const fR=(ms)=>ms.length?ms.map(m=>{const gf=m.side==='home'?m.home_score:m.away_score,ga=m.side==='home'?m.away_score:m.home_score,res=gf>ga?'W':gf===ga?'D':'L';return `<div class="form-row"><span class="form-res fr-${res.toLowerCase()}">${res}</span><span style="font-size:.65rem;color:var(--muted)">${m.match_date||''}</span><span>vs ${m.opponent}</span><span style="margin-left:auto;font-family:monospace;font-size:.75rem">${gf}-${ga}</span></div>`;}).join(''):'<p style="color:var(--muted);font-size:.78rem">Sin partidos.</p>';
+  const fR=(ms)=>ms.length?ms.map(m=>{const gf=m.side==='home'?m.home_score:m.away_score,ga=m.side==='home'?m.away_score:m.home_score,res=gf>ga?'W':gf===ga?'D':'L';return `<div class="form-row"><span class="form-res fr-${res.toLowerCase()}">${res}</span><span style="font-size:.65rem;color:var(--muted)">${fmtDate(m.match_date)||''}</span><span>vs ${m.opponent}</span><span style="margin-left:auto;font-family:monospace;font-size:.75rem">${gf}-${ga}</span></div>`;}).join(''):'<p style="color:var(--muted);font-size:.78rem">Sin partidos.</p>';
   el.innerHTML=`<div class="pro-grid"><div class="pro-card"><div class="pro-card-title">⚙️ Parámetros</div><table class="kv-table"><tr><td>Fuerza ${home.name}</td><td>${home.elo}</td></tr><tr><td>Fuerza ${away.name}</td><td>${away.elo}</td></tr><tr><td>Diferencia</td><td>${model.elo_diff>0?'+':''}${model.elo_diff}</td></tr><tr><td>Goles esp. ${home.name}</td><td>${model.lambda_home}</td></tr><tr><td>Goles esp. ${away.name}</td><td>${model.lambda_away}</td></tr><tr><td>Estado de forma ${home.name}</td><td style="color:${home.form_factor>1?'var(--green)':home.form_factor<1?'var(--red)':'var(--muted)'}">${home.form_factor>1?'🔥 En racha':home.form_factor<1?'❄️ Bajando':'— Sin partidos'}</td></tr><tr><td>Estado de forma ${away.name}</td><td style="color:${away.form_factor>1?'var(--green)':away.form_factor<1?'var(--red)':'var(--muted)'}">${away.form_factor>1?'🔥 En racha':away.form_factor<1?'❄️ Bajando':'— Sin partidos'}</td></tr></table></div><div class="pro-card"><div class="pro-card-title">📊 Probabilidades</div><table class="kv-table"><tr><td>${home.name} gana</td><td style="color:var(--green)">${(model.home_win_prob*100).toFixed(2)}%</td></tr><tr><td>Empate</td><td style="color:var(--muted)">${(model.draw_prob*100).toFixed(2)}%</td></tr><tr><td>${away.name} gana</td><td style="color:var(--orange)">${(model.away_win_prob*100).toFixed(2)}%</td></tr><tr><td>Goles esp. ${home.name}</td><td>${model.expected_home_goals.toFixed(3)}</td></tr><tr><td>Goles esp. ${away.name}</td><td>${model.expected_away_goals.toFixed(3)}</td></tr><tr><td>Prode recomendado</td><td style="color:var(--gold);font-weight:700">${model.recommended_score||'—'}</td></tr></table></div>${oH}<div class="pro-card"><div class="pro-card-title">📈 Top marcadores</div>${barHtml}</div><div class="pro-card pro-full"><div class="pro-card-title">🗺 Matriz 8×8 — Verde=${home.name} gana · Naranja=${away.name} gana</div>${matHtml}</div><div class="pro-card"><div class="pro-card-title">📉 Distribución goles — ${home.name}</div>${mB(home_marginal,'var(--green)')}</div><div class="pro-card"><div class="pro-card-title">📉 Distribución goles — ${away.name}</div>${mB(away_marginal,'var(--orange)')}</div><div class="pro-card"><div class="pro-card-title">🏃 Forma reciente — ${home.name}</div>${fR(home_form)}</div><div class="pro-card"><div class="pro-card-title">🏃 Forma reciente — ${away.name}</div>${fR(away_form)}</div></div>`;
 }
 async function loadEloMx(){const el=document.getElementById('eloMxContent');const d=await api('/tech/elo-matrix',true);if(!d){el.innerHTML='<div class="empty">Error.</div>';return;}const{teams,matrix}=d;let html=`<table class="elo-mx-tbl"><thead><tr><th>↓ vs →</th>`;teams.forEach(t=>html+=`<th>${t.code}</th>`);html+='</tr></thead><tbody>';teams.forEach((home,i)=>{html+=`<tr><td>${home.code}</td>`;matrix[i].forEach((p,j)=>{if(p===null){html+='<td style="color:#CBD5E1">—</td>';return;}const bg=p>60?`rgba(22,163,74,${((p-50)/50*.4).toFixed(2)})`:p<40?`rgba(220,38,38,${((50-p)/50*.35).toFixed(2)})`:'transparent';html+=`<td style="background:${bg}">${p}%</td>`;});html+='</tr>';});html+='</tbody></table>';el.innerHTML=html;}
@@ -1006,7 +1104,7 @@ async function loadProTeam(code,btn){
   const el=document.getElementById('proTeamProfile');el.innerHTML='<div class="loading"><div class="spinner"></div></div>';
   const d=await api(`/tech/team/${code}`,true);if(!d||d.error){el.innerHTML='<div class="empty">No encontrado.</div>';return;}
   const{team,stats,matches,upcoming,form_factor}=d;const lv=eloLevel(team.elo_rating);const wPct=stats.played?((stats.wins/stats.played)*100).toFixed(0):0;
-  el.innerHTML=`<div class="profile-hero"><div class="ph-flag">${flagImg(team.fifa_code,56,38)}</div><div><div class="ph-name">${team.name}</div><div class="ph-level">${lv.stars} ${lv.label} · Grupo ${team.group_name}</div></div><div class="ph-stats"><div class="ph-stat"><div class="ph-sv">${stats.points}</div><div class="ph-sl">Pts</div></div><div class="ph-stat"><div class="ph-sv">${stats.wins}</div><div class="ph-sl">Vic</div></div><div class="ph-stat"><div class="ph-sv">${stats.gf}:${stats.ga}</div><div class="ph-sl">Goles</div></div></div></div><div class="pro-grid"><div class="pro-card"><div class="pro-card-title">📋 Datos</div><table class="kv-table"><tr><td>Fuerza</td><td>${Math.round(team.elo_rating)}</td></tr><tr><td>Factor forma</td><td>${form_factor}</td></tr><tr><td>% victorias</td><td style="color:var(--green)">${wPct}%</td></tr><tr><td>DG</td><td style="color:${stats.gd>=0?'var(--green)':'var(--red)'}">${stats.gd>=0?'+':''}${stats.gd}</td></tr></table></div><div class="pro-card"><div class="pro-card-title">📅 Próximos</div>${upcoming.length?upcoming.slice(0,4).map(m=>`<div class="form-row"><span>${m.side==='home'?'🏠':'✈️'}</span><span style="font-size:.65rem;color:var(--muted)">${m.match_date}</span><span>vs ${m.opponent}</span><span style="margin-left:auto;font-size:.62rem;color:var(--muted)">${m.city||''}</span></div>`).join(''):'<p style="color:var(--muted);font-size:.78rem">Sin próximos.</p>'}</div><div class="pro-card pro-full"><div class="pro-card-title">⚡ Historial</div>${matches.length?matches.map(m=>{const res=m.gf>m.ga?'W':m.gf===m.ga?'D':'L';return `<div class="form-row"><span class="form-res fr-${res.toLowerCase()}">${res}</span><span style="font-size:.65rem;color:var(--muted)">${m.match_date}</span><span>${m.side==='home'?'🏠':'✈️'} vs ${m.opponent}</span><span style="margin-left:auto;font-family:monospace">${m.gf}-${m.ga}</span></div>`;}).join(''):'<p style="color:var(--muted);font-size:.78rem">Sin partidos.</p>'}</div></div>`;
+  el.innerHTML=`<div class="profile-hero"><div class="ph-flag">${flagImg(team.fifa_code,56,38)}</div><div><div class="ph-name">${team.name}</div><div class="ph-level">${lv.stars} ${lv.label} · Grupo ${team.group_name}</div></div><div class="ph-stats"><div class="ph-stat"><div class="ph-sv">${stats.points}</div><div class="ph-sl">Pts</div></div><div class="ph-stat"><div class="ph-sv">${stats.wins}</div><div class="ph-sl">Vic</div></div><div class="ph-stat"><div class="ph-sv">${stats.gf}:${stats.ga}</div><div class="ph-sl">Goles</div></div></div></div><div class="pro-grid"><div class="pro-card"><div class="pro-card-title">📋 Datos</div><table class="kv-table"><tr><td>Fuerza</td><td>${Math.round(team.elo_rating)}</td></tr><tr><td>Factor forma</td><td>${form_factor}</td></tr><tr><td>% victorias</td><td style="color:var(--green)">${wPct}%</td></tr><tr><td>DG</td><td style="color:${stats.gd>=0?'var(--green)':'var(--red)'}">${stats.gd>=0?'+':''}${stats.gd}</td></tr></table></div><div class="pro-card"><div class="pro-card-title">📅 Próximos</div>${upcoming.length?upcoming.slice(0,4).map(m=>`<div class="form-row"><span>${m.side==='home'?'🏠':'✈️'}</span><span style="font-size:.65rem;color:var(--muted)">${fmtDate(m.match_date)}</span><span>vs ${m.opponent}</span><span style="margin-left:auto;font-size:.62rem;color:var(--muted)">${m.city||''}</span></div>`).join(''):'<p style="color:var(--muted);font-size:.78rem">Sin próximos.</p>'}</div><div class="pro-card pro-full"><div class="pro-card-title">⚡ Historial</div>${matches.length?matches.map(m=>{const res=m.gf>m.ga?'W':m.gf===m.ga?'D':'L';return `<div class="form-row"><span class="form-res fr-${res.toLowerCase()}">${res}</span><span style="font-size:.65rem;color:var(--muted)">${fmtDate(m.match_date)}</span><span>${m.side==='home'?'🏠':'✈️'} vs ${m.opponent}</span><span style="margin-left:auto;font-family:monospace">${m.gf}-${m.ga}</span></div>`;}).join(''):'<p style="color:var(--muted);font-size:.78rem">Sin partidos.</p>'}</div></div>`;
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────
