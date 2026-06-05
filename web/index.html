@@ -1153,7 +1153,6 @@ async function loadTeamHistory(code, btn) {
   const el = document.getElementById('historialContent');
   el.innerHTML = '<div class="loading"><div class="spinner"></div> Cargando historial...</div>';
 
-  // Llamar al nuevo endpoint — siempre fresco, sin cache
   const BASE = API.endsWith('/api') ? API.slice(0,-4) : API.replace(/\/api$/, '');
   let data;
   try {
