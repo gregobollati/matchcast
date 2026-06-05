@@ -401,7 +401,27 @@ a{color:inherit;text-decoration:none}
 .ys-btn{background:linear-gradient(135deg,var(--green2),var(--green));border:none;color:#07100A;border-radius:8px;padding:10px 18px;font-size:.82rem;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:opacity .15s;width:100%;margin-top:8px;box-shadow:var(--neon)}
 .ys-btn:hover{opacity:.88}
 
-/* ══ PRO ══════════════════════════════════════════════════ */
+/* ══ HISTORIAL ════════════════════════════════════════════ */
+.hist-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:8px}
+.hist-header{background:linear-gradient(135deg,#071A0C,#0C2212);padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border)}
+.hist-team-name{font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;color:var(--text);letter-spacing:.5px}
+.hist-source{font-size:.58rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:1px}
+.hist-match{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);transition:background .12s}
+.hist-match:last-child{border-bottom:none}
+.hist-match:hover{background:var(--surface2)}
+.hist-result{font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;width:20px;text-align:center;flex-shrink:0}
+.hr-w{color:var(--green)}.hr-d{color:var(--muted)}.hr-l{color:var(--red)}
+.hist-teams{flex:1;min-width:0}
+.hist-names{font-size:.83rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-comp{font-size:.62rem;color:var(--muted);margin-top:1px}
+.hist-score{font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;color:var(--text);letter-spacing:2px;flex-shrink:0;min-width:40px;text-align:center}
+.hist-date{font-size:.62rem;color:var(--muted2);flex-shrink:0;text-align:right;min-width:52px}
+.hist-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--border)}
+.hist-stat{padding:10px;text-align:center;border-right:1px solid var(--border)}
+.hist-stat:last-child{border-right:none}
+.hist-stat-val{font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;line-height:1}
+.hist-stat-lbl{font-size:.56rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-top:2px}
+.hs-w{color:var(--green)}.hs-d{color:var(--muted)}.hs-l{color:var(--red)}.hs-gd{color:var(--gold)}
 .pro-banner{background:linear-gradient(135deg,#0C1A10,#071A0C);border:1px solid rgba(167,139,250,.15);border-radius:var(--r);padding:13px 16px;margin-bottom:12px;display:flex;align-items:center;gap:10px;color:var(--text)}
 .pro-badge{background:var(--purple);color:#fff;font-size:.58rem;font-weight:700;padding:2px 7px;border-radius:100px;letter-spacing:1px;flex-shrink:0}
 .pro-t{font-weight:700;font-size:.84rem}
@@ -498,6 +518,7 @@ a{color:inherit;text-decoration:none}
       <button class="nav-btn" onclick="go('campeones',this)">Campeón</button>
       <button class="nav-btn" onclick="go('presion',this)">Presión</button>
       <button class="nav-btn" onclick="go('equipos',this)">Equipos</button>
+      <button class="nav-btn" onclick="go('historial',this)">📋 Historial</button>
       <button class="nav-btn nav-pro" onclick="go('pro',this)">⚗ Pro</button>
     </div>
     <button class="hbg-btn" id="hbgBtn" onclick="toggleMenu()" aria-label="Menú">
@@ -520,6 +541,7 @@ a{color:inherit;text-decoration:none}
   <div class="mobile-menu-item" id="mm-campeones" onclick="goMobile('campeones')"><span class="mmi-ico">👑</span><span class="mmi-txt">¿Quién puede ser campeón?</span><span class="mmi-arr">›</span></div>
   <div class="mobile-menu-item" id="mm-presion" onclick="goMobile('presion')"><span class="mmi-ico">🔥</span><span class="mmi-txt">Índice de presión</span><span class="mmi-arr">›</span></div>
   <div class="mobile-menu-item" id="mm-equipos" onclick="goMobile('equipos')"><span class="mmi-ico">🌍</span><span class="mmi-txt">Nivel de selecciones</span><span class="mmi-arr">›</span></div>
+  <div class="mobile-menu-item" id="mm-historial" onclick="goMobile('historial')"><span class="mmi-ico">📋</span><span class="mmi-txt">Historial de selecciones</span><span class="mmi-arr">›</span></div>
   <div class="mobile-menu-item pro-item" id="mm-pro" onclick="goMobile('pro')"><span class="mmi-ico">⚗</span><span class="mmi-txt">Análisis Pro</span><span class="mmi-arr">›</span></div>
 </div>
 
@@ -612,6 +634,22 @@ a{color:inherit;text-decoration:none}
 <div class="section" id="sec-equipos">
   <div class="sec-head"><div class="sec-title">🌍 Nivel de selecciones</div><div class="sec-sub">Ordenadas por fuerza real · Se actualiza después de cada partido</div></div>
   <div id="eloList"><div class="loading"><div class="spinner"></div></div></div>
+</div>
+
+<!-- HISTORIAL -->
+<div class="section" id="sec-historial">
+  <div class="sec-head"><div class="sec-title">📋 Historial de selecciones</div><div class="sec-sub">Últimos 10 partidos de cada selección — incluye eliminatorias y amistosos</div></div>
+  <div style="display:grid;gap:8px;margin-bottom:16px">
+    <input type="text" id="histSearchInput" placeholder="🔍 Buscar selección..." oninput="filterHistTeams()"
+      style="width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:11px 14px;font-size:.88rem;color:var(--text);outline:none">
+    <div class="team-mini-row" id="histTeamMinis" style="max-height:120px;overflow-y:auto"></div>
+  </div>
+  <div id="historialContent">
+    <div style="text-align:center;padding:40px;color:var(--muted)">
+      <div style="font-size:2.5rem;margin-bottom:10px">🌍</div>
+      <div style="font-size:.88rem">Elegí una selección para ver su historial</div>
+    </div>
+  </div>
 </div>
 
 <!-- PRO -->
@@ -730,7 +768,7 @@ function go(name,btn){
   document.querySelectorAll('.mobile-menu-item').forEach(el=>el.classList.remove('active-m'));
   const mItem=document.getElementById('mm-'+name);
   if(mItem)mItem.classList.add('active-m');
-  const L={home:loadHome,ys:loadYs,proximos:loadUpcoming,resultados:loadResults,grupos:loadGroups,fixture:loadFixture,campeones:loadChampions,presion:loadPressure,equipos:loadTeams,pro:loadPro};
+  const L={home:loadHome,ys:loadYs,proximos:loadUpcoming,resultados:loadResults,grupos:loadGroups,fixture:loadFixture,campeones:loadChampions,presion:loadPressure,equipos:loadTeams,historial:loadHistorial,pro:loadPro};
   if(L[name])L[name]();
 }
 
@@ -1078,7 +1116,119 @@ async function openMatch(id){
 function closeModal(){document.getElementById('overlay').classList.remove('open');}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
-// ── PRO ───────────────────────────────────────────────────────────────────
+// ── HISTORIAL ─────────────────────────────────────────────────────────────
+let histTeamsData = [];
+let currentHistCode = null;
+
+async function loadHistorial() {
+  if (!histTeamsData.length) {
+    const d = await api('/standings');
+    if (!d) return;
+    histTeamsData = d;
+    renderHistMinis(d);
+  }
+}
+
+function renderHistMinis(teams) {
+  document.getElementById('histTeamMinis').innerHTML = teams.map(t =>
+    `<span class="team-mini ${t.fifa_code===currentHistCode?'sel':''}"
+      onclick="loadTeamHistory('${t.fifa_code}',this)">
+      ${flagImg(t.fifa_code,18,12,'t-flag-sm')} ${t.name}
+    </span>`
+  ).join('');
+}
+
+function filterHistTeams() {
+  const q = document.getElementById('histSearchInput').value.toLowerCase();
+  renderHistMinis(histTeamsData.filter(t =>
+    t.name.toLowerCase().includes(q) || t.fifa_code.toLowerCase().includes(q)
+  ));
+}
+
+async function loadTeamHistory(code, btn) {
+  currentHistCode = code;
+  document.querySelectorAll('#histTeamMinis .team-mini').forEach(b => b.classList.remove('sel'));
+  if (btn) btn.classList.add('sel');
+
+  const el = document.getElementById('historialContent');
+  el.innerHTML = '<div class="loading"><div class="spinner"></div> Cargando historial...</div>';
+
+  // Llamar al nuevo endpoint — siempre fresco, sin cache
+  let data;
+  try {
+    const r = await fetch(`${API.replace('/api','')}/api/team-history/${code}?_=${Date.now()}`);
+    data = await r.json();
+  } catch(e) {
+    el.innerHTML = '<div class="empty"><div class="empty-ico">⚠️</div>No se pudo cargar el historial.</div>';
+    return;
+  }
+
+  const matches = data.matches || [];
+  const teamName = data.team_name || code;
+  const source = data.source || '';
+  const team = histTeamsData.find(t => t.fifa_code === code);
+
+  if (!matches.length) {
+    el.innerHTML = `<div class="empty"><div class="empty-ico">📭</div>Sin partidos disponibles para ${teamName}.<br><small>El historial se actualiza cuando comience el torneo.</small></div>`;
+    return;
+  }
+
+  // Calcular stats de los partidos mostrados
+  let w=0,d=0,l=0,gf=0,ga=0;
+  matches.forEach(m => {
+    const isHome = m.home_name === teamName || (source==='local_wc');
+    const myG  = isHome ? (m.home_score||0) : (m.away_score||0);
+    const oppG = isHome ? (m.away_score||0) : (m.home_score||0);
+    gf += myG; ga += oppG;
+    if (myG > oppG) w++;
+    else if (myG === oppG) d++;
+    else l++;
+  });
+
+  const sourceLabel = source === 'football-data'
+    ? '🌐 Datos en tiempo real'
+    : source === 'local_wc'
+    ? '📊 Partidos del Mundial 2026'
+    : '📊 Datos locales';
+
+  el.innerHTML = `
+    <div class="hist-card">
+      <div class="hist-header">
+        ${flagImg(code, 40, 28)}
+        <div>
+          <div class="hist-team-name">${teamName}</div>
+          <div class="hist-source">${sourceLabel} · Últimos ${matches.length} partidos</div>
+        </div>
+        ${team ? `<div style="margin-left:auto;text-align:right">
+          <div style="font-size:.7rem;color:var(--green)">${eloLevel(team.elo_rating).stars}</div>
+          <div style="font-size:.65rem;color:var(--muted)">${eloLevel(team.elo_rating).label}</div>
+        </div>` : ''}
+      </div>
+      <div class="hist-stats">
+        <div class="hist-stat"><div class="hist-stat-val hs-w">${w}</div><div class="hist-stat-lbl">Victorias</div></div>
+        <div class="hist-stat"><div class="hist-stat-val hs-d">${d}</div><div class="hist-stat-lbl">Empates</div></div>
+        <div class="hist-stat"><div class="hist-stat-val hs-l">${l}</div><div class="hist-stat-lbl">Derrotas</div></div>
+        <div class="hist-stat"><div class="hist-stat-val hs-gd">${gf>ga?'+':''}${gf-ga}</div><div class="hist-stat-lbl">DG</div></div>
+      </div>
+      ${matches.map(m => {
+        const isHome = m.home_name === teamName;
+        const myG    = isHome ? m.home_score : m.away_score;
+        const oppG   = isHome ? m.away_score : m.home_score;
+        const opp    = isHome ? m.away_name : m.home_name;
+        const res    = myG > oppG ? 'W' : myG === oppG ? 'D' : 'L';
+        const resCls = res==='W'?'hr-w':res==='D'?'hr-d':'hr-l';
+        return `<div class="hist-match">
+          <span class="hist-result ${resCls}">${res}</span>
+          <div class="hist-teams">
+            <div class="hist-names">${isHome?'🏠':' ✈️'} ${m.home_name} vs ${m.away_name}</div>
+            <div class="hist-comp">${m.competition||m.stage||''}</div>
+          </div>
+          <div class="hist-score">${m.home_score ?? '—'}–${m.away_score ?? '—'}</div>
+          <div class="hist-date">${fmtDate(m.match_date)}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
 function showPro(name,btn){
   ['match','eloMatrix','team','formulas'].forEach(t=>{document.getElementById('pro-'+t).style.display=t===name?'block':'none';});
   document.querySelectorAll('.pro-tab').forEach(b=>b.classList.remove('on'));if(btn)btn.classList.add('on');

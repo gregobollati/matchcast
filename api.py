@@ -12,7 +12,8 @@ try:
 except ImportError:
     pass
 
-from data.database import get_connection, init_db, seed_teams, seed_group_stage_matches
+from data.database import get_connection, init_db
+from data.seed_real import seed_real_teams, seed_real_matches
 from utils.api_fetcher import inject_demo_odds, sync_all
 from models.elo import get_elo_win_probability
 from models.predictor import predict_match, poisson_score_matrix, elo_to_lambda, get_recent_form_adjustment
@@ -26,8 +27,10 @@ def ensure_data():
     cur.execute("SELECT COUNT(*) as n FROM teams");  nt = cur.fetchone()["n"]
     cur.execute("SELECT COUNT(*) as n FROM matches"); nm = cur.fetchone()["n"]
     conn.close()
-    if nt == 0: seed_teams()
-    if nm == 0: seed_group_stage_matches(); inject_demo_odds()
+    if nt == 0: seed_real_teams()
+    if nm == 0:
+        seed_real_matches()
+        inject_demo_odds()
 
 ensure_data()
 
@@ -499,6 +502,109 @@ def poisson_table():
         lam = lam_10 / 10
         result[str(lam)] = [round(poisson_p(lam,k),4) for k in range(9)]
     return jsonify(result)
+
+@app.route("/api/team-history/<fifa_code>")
+def team_history(fifa_code):
+    """Últimos partidos de una selección (histórico real via football-data.org)."""
+    import requests as req
+    import os
+
+    fifa_code = fifa_code.upper()
+    api_key = os.getenv("FOOTBALL_DATA_API_KEY", "")
+
+    # Mapa de códigos FIFA → IDs de football-data.org
+    # IDs obtenidos de la API oficial
+    TEAM_IDS = {
+        "ARG": 974,  "BRA": 764,  "FRA": 773,  "ESP": 760,  "ENG": 770,
+        "GER": 759,  "POR": 765,  "NED": 774,  "BEL": 805,  "URU": 803,
+        "CRO": 799,  "MEX": 794,  "USA": 768,  "SEN": 907,  "MAR": 1031,
+        "JPN": 827,  "KOR": 796,  "AUS": 797,  "SUI": 788,  "DEN": 782,
+        "POL": 806,  "SWE": 808,  "TUR": 769,  "NOR": 781,  "AUT": 775,
+        "COL": 801,  "ECU": 833,  "PAR": 835,  "PER": 841,  "CAN": 798,
+        "QAT": 840,  "KSA": 843,  "IRN": 826,  "EGY": 922,  "GHA": 1052,
+        "CMR": 1024, "TUN": 1033, "ALG": 1030, "CIV": 1028, "CZE": 798,
+        "SCO": 779,  "RSA": 1044, "NGA": 1035, "PAN": 837,  "CRC": 827,
+        "HAI": 2001, "CUW": 2002, "UZB": 2003, "JOR": 2004, "COD": 2005,
+        "CPV": 2006, "BIH": 2007, "IRQ": 2008, "NZL": 2009,
+    }
+
+    team_id = TEAM_IDS.get(fifa_code)
+
+    # Si no tenemos el ID o no hay API key, devolvemos datos del torneo local
+    if not team_id or not api_key or team_id > 2000:
+        # Fallback: devolver partidos del Mundial que tenga esta selección
+        team = q1("SELECT id, name FROM teams WHERE fifa_code=?", (fifa_code,))
+        if not team:
+            return jsonify({"matches": [], "source": "local"})
+        matches = q("""
+            SELECT m.match_date, m.match_time, m.stage,
+                   th.name as home_name, th.fifa_code as home_code,
+                   ta.name as away_name, ta.fifa_code as away_code,
+                   m.home_score, m.away_score, m.status, m.city
+            FROM matches m
+            JOIN teams th ON m.home_team_id=th.id
+            JOIN teams ta ON m.away_team_id=ta.id
+            WHERE (m.home_team_id=? OR m.away_team_id=?)
+              AND m.status='FINISHED'
+            ORDER BY m.match_date DESC LIMIT 10
+        """, (team["id"], team["id"]))
+        return jsonify({"matches": matches, "team_name": team["name"], "source": "local_wc"})
+
+    # Llamar a football-data.org
+    try:
+        headers = {"X-Auth-Token": api_key}
+        url = f"https://api.football-data.org/v4/teams/{team_id}/matches?status=FINISHED&limit=10"
+        r = req.get(url, headers=headers, timeout=10)
+        if r.status_code != 200:
+            raise Exception(f"API error {r.status_code}")
+        data = r.json()
+        matches_raw = data.get("matches", [])
+
+        matches = []
+        for m in matches_raw[-10:]:
+            home = m.get("homeTeam", {})
+            away = m.get("awayTeam", {})
+            score = m.get("score", {})
+            full  = score.get("fullTime", {})
+            comp  = m.get("competition", {})
+            utcDate = m.get("utcDate", "")[:10]
+            matches.append({
+                "match_date":  utcDate,
+                "competition": comp.get("name", ""),
+                "home_name":   home.get("name", ""),
+                "away_name":   away.get("name", ""),
+                "home_score":  full.get("home"),
+                "away_score":  full.get("away"),
+                "status":      m.get("status", ""),
+            })
+
+        # Ordenar del más reciente al más antiguo
+        matches.sort(key=lambda x: x["match_date"], reverse=True)
+
+        team_info = q1("SELECT name FROM teams WHERE fifa_code=?", (fifa_code,))
+        return jsonify({
+            "matches": matches,
+            "team_name": team_info["name"] if team_info else fifa_code,
+            "source": "football-data"
+        })
+
+    except Exception as e:
+        # Fallback a datos locales
+        team = q1("SELECT id, name FROM teams WHERE fifa_code=?", (fifa_code,))
+        if not team:
+            return jsonify({"matches": [], "source": "error", "error": str(e)})
+        matches = q("""
+            SELECT m.match_date, m.stage as competition,
+                   th.name as home_name, ta.name as away_name,
+                   m.home_score, m.away_score, m.status
+            FROM matches m
+            JOIN teams th ON m.home_team_id=th.id
+            JOIN teams ta ON m.away_team_id=ta.id
+            WHERE (m.home_team_id=? OR m.away_team_id=?)
+              AND m.status='FINISHED'
+            ORDER BY m.match_date DESC LIMIT 10
+        """, (team["id"], team["id"]))
+        return jsonify({"matches": matches, "team_name": team["name"], "source": "local_fallback"})
 
 if __name__ == "__main__":
     print("🌐 http://localhost:5000")
