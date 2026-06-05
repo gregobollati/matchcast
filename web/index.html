@@ -1169,9 +1169,9 @@ async function loadTeamHistory(code, btn) {
   const source = data.source || '';
   const team = histTeamsData.find(t => t.fifa_code === code);
 
-  const sourceLabel = source === 'football-data'
-    ? '🌐 Datos en tiempo real'
-    : source === 'local_wc'
+  const sourceLabel = source === 'live'
+    ? '🌐 Tiempo real · football-data.org'
+    : source === 'local'
     ? '📊 Partidos del Mundial 2026'
     : '📊 Datos locales';
 
